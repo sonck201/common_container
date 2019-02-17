@@ -1,0 +1,54 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile/app.Dockerfile
+    command: php -S 0.0.0.0:80 -t public
+    working_dir: /app
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+    volumes:
+      - .:/app
+    ports:
+      - 8600:80
+    links:
+      - mysql:db
+    networks:
+      - asgard
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 6603:80
+    links:
+      - mysql:db
+    networks:
+      - asgard
+
+  mysql:
+    image: mysql:8
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - MysqlDb:/var/lib/mysql
+    ports:
+      - 3306:3306
+      - 33060:33060
+    networks:
+      - asgard
+
+volumes:
+  MysqlDb:
+    name: MysqlDb
+
+networks:
+  asgard:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.100.0/24
