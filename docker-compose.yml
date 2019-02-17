@@ -5,15 +5,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile/app.Dockerfile
-    command: php -S 0.0.0.0:80 -t public
+    command: php -S 0.0.0.0:${APP_PORT_INTERNAL} -t public
     working_dir: /app
+    env_file:
+      - .env
     environment:
       DB_HOST: mysql
       DB_PORT: 3306
     volumes:
       - .:/app
     ports:
-      - 8600:80
+      - ${APP_PORT_EXTERNAL}:${APP_PORT_INTERNAL}
     links:
       - mysql:db
     networks:
@@ -21,23 +23,38 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    env_file:
+      - .env
     ports:
-      - 6603:80
+      - ${PHPMYADMIN_PORT_EXTERNAL}:${PHPMYADMIN_PORT_INTERNAL}
     links:
-      - mysql:db
+      - mysql8:db
     networks:
       - asgard
 
   mysql:
     image: mysql:8
     command: mysqld --default-authentication-plugin=mysql_native_password
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - MysqlDb:/var/lib/mysql
     ports:
-      - 3306:3306
-      - 33060:33060
+      - ${MYSQL_PORT}:${MYSQL_PORT}
+      - ${MYSQL_SOCKET_PORT}:${MYSQL_SOCKET_PORT}
+    networks:
+      - asgard
+
+  mysql8:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     networks:
       - asgard
 
