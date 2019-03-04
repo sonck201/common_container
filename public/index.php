@@ -1,16 +1,10 @@
 <?php
 
-var_dump($_ENV);
+define('__START__', microtime(true));
+define('ROOT', dirname(__FILE__) . '/../');
 
-$host = $_ENV['DB_HOST'];
-$port = $_ENV['DB_PORT'];
-$db = 'miniwine';
+ini_set('xdebug.var_display_max_depth', '10');
 
-$dns = "mysql:host={$host};port={$port};dbname={$db}";
-$user = 'root';
-$pass = 'root';
+require dirname(__FILE__) . '/../vendor/autoload.php';
 
-$pdo = new PDO($dns, $user, $pass);
-$data = $pdo->query('SELECT VERSION()')->fetch();
-
-var_dump($data);
+var_dump('Time execute::' . round(microtime(true) - __START__, 4));

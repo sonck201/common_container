@@ -1,6 +1,16 @@
 version: "3.7"
 
 services:
+  portainer:
+    image: portainer/portainer:latest
+    ports:
+      - 9000:9000
+    volumes:
+      - portainerData:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - nginxProxy
+
   app:
     build:
       context: .
@@ -10,31 +20,32 @@ services:
     env_file:
       - .env
     environment:
-      DB_HOST: mysql
-      DB_PORT: 3306
+      VIRTUAL_HOST: test.local
     volumes:
       - .:/app
     ports:
       - ${APP_PORT_EXTERNAL}:${APP_PORT_INTERNAL}
-    links:
-      - mysql:db
+    depends_on:
+      - mysql5
     networks:
-      - asgard
+      - nginxProxy
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
     env_file:
       - .env
+    environment:
+      PMA_HOST: mysql5
     ports:
-      - ${PHPMYADMIN_PORT_EXTERNAL}:${PHPMYADMIN_PORT_INTERNAL}
-    links:
-      - mysql8:db
+      - ${PHPMYADMIN_PORT_EXTERNAL}:80
+    depends_on:
+      - mysql5
     networks:
-      - asgard
+      - nginxProxy
 
-  mysql:
-    image: mysql:8
-    command: mysqld --default-authentication-plugin=mysql_native_password
+  mysql5:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password --max_allowed_packet=512M
     env_file:
       - .env
     environment:
@@ -42,30 +53,29 @@ services:
     volumes:
       - MysqlDb:/var/lib/mysql
     ports:
-      - ${MYSQL_PORT}:${MYSQL_PORT}
-      - ${MYSQL_SOCKET_PORT}:${MYSQL_SOCKET_PORT}
+      - ${MYSQL_PORT}:3306
+      - ${MYSQL_SOCKET_PORT}:33060
     networks:
-      - asgard
+      - nginxProxy
 
-  mysql8:
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    env_file:
-      - .env
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  nginxProxy:
+    image: jwilder/nginx-proxy:latest
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
     networks:
-      - asgard
+      - nginxProxy
 
 volumes:
   MysqlDb:
-    name: MysqlDb
+    external:
+      name: MysqlDb
+  portainerData:
+    external:
+      name: portainerData
 
 networks:
-  asgard:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.100.0/24
+  nginxProxy:
+    external:
+      name: nginxProxy
