@@ -67,6 +67,11 @@ services:
     networks:
       - nginxProxy
 
+  apache:
+    build:
+      context: .
+      dockerfile: Dockerfile/apache.Dockerfile
+
 volumes:
   MysqlDb:
     external:
