@@ -50,6 +50,7 @@ services:
       - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      TZ: Asia/Ho_Chi_Minh
     volumes:
       - MysqlDb:/var/lib/mysql
     ports:
@@ -72,6 +73,28 @@ services:
       context: .
       dockerfile: Dockerfile/apache.Dockerfile
 
+  mongo:
+    image: mongo
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - mongoData:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS}
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${DB_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${DB_PASS}
+
 volumes:
   MysqlDb:
     external:
@@ -79,6 +102,9 @@ volumes:
   portainerData:
     external:
       name: portainerData
+  mongoData:
+    external:
+      name: mongoData
 
 networks:
   nginxProxy:
