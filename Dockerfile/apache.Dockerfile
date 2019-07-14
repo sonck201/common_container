@@ -22,4 +22,4 @@ RUN yum install -y ${PHP_VER}-php-pecl-xdebug ${PHP_VER}-php-pecl-apcu ${PHP_VER
 
 RUN ln -s /usr/bin/${PHP_VER} /usr/bin/php
 
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+#CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
