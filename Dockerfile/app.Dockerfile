@@ -1,6 +1,6 @@
 FROM php:7.2
 
-MAINTAINER Iamck
+LABEL MAINTAINER iamck<thanhson201@gmail.com>
 
 RUN apt-get update && apt-get install -y
 RUN docker-php-ext-install pdo pdo_mysql
