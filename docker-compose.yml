@@ -14,23 +14,6 @@ services:
     networks: &network
       - nginxProxy
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile/app.Dockerfile
-    command: php -S 0.0.0.0:${APP_PORT_INTERNAL} -t public
-    working_dir: /app
-    env_file: *envFile
-    environment:
-      VIRTUAL_HOST: test.local
-    volumes:
-      - .:/app
-    ports:
-      - ${APP_PORT_EXTERNAL}:${APP_PORT_INTERNAL}
-    depends_on:
-      - mysql5
-    networks: *network
-
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     restart: always
@@ -38,7 +21,7 @@ services:
     environment:
       PMA_HOST: mysql5
     ports:
-      - ${PHPMYADMIN_PORT_EXTERNAL}:80
+      - ${PHPMYADMIN_PORT}:80
     depends_on:
       - mysql5
     networks: *network
@@ -66,11 +49,6 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock
     networks: *network
 
-  # apache:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile/apache.Dockerfile
-
   mongo:
     image: mongo:latest
     env_file: *envFile
@@ -83,6 +61,28 @@ services:
     ports:
       - ${MONGO_PORT}:27017
     networks: *network
+
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile/app.Dockerfile
+  #   command: php -S 0.0.0.0:${APP_PORT_INTERNAL} -t public
+  #   working_dir: /app
+  #   env_file: *envFile
+  #   environment:
+  #     VIRTUAL_HOST: test.local
+  #   volumes:
+  #     - .:/app
+  #   ports:
+  #     - ${APP_PORT}:${APP_PORT_INTERNAL}
+  #   depends_on:
+  #     - mysql5
+  #   networks: *network
+
+  # apache:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile/apache.Dockerfile
 
 volumes:
   PortainerData:
