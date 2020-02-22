@@ -1,10 +1,10 @@
 {
-    "name": "iamck/docker_db",
+    "name": "iamck/common_container",
     "license": "proprietary",
     "authors": [
         {
             "name": "Iamck",
-            "email": "thanhson_it201@yahoo.com"
+            "email": "thanhson201@gmail.com"
         }
     ],
     "autoload": {

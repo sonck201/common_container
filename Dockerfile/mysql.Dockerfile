@@ -1,6 +1,6 @@
 FROM mysql:8
 
-MAINTAINER Iamck
+LABEL MAINTAINER iamck<thanhson201@gmail.com>
 
 RUN apt-get update && apt-get install -y
 
