@@ -42,6 +42,7 @@ services:
 
   nginxProxy:
     image: jwilder/nginx-proxy:latest
+    restart: always
     env_file: *envFile
     ports:
       - ${NGINX_PROXY_PORT}:80
