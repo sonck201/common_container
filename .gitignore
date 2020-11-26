@@ -1,4 +1,5 @@
 .idea
+database
 vendor
 
 .env
