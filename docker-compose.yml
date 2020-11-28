@@ -84,6 +84,25 @@ services:
     ports:
       - 6379:6379
 
+  cadvisor:
+    build:
+      context: .
+      dockerfile: Dockerfile/cadvisor.Dockerfile
+    privileged: true
+    environment:
+      VIRTUAL_HOST: cadvisor.greeco.com.vn
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    expose:
+      - 8080
+    networks: *network
+
   # app:
   #   build:
   #     context: .
