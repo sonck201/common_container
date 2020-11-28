@@ -59,8 +59,8 @@ $ iptables-save | grep 2222
 # Check newly added port status
 $ lsof -i -P |grep http
 httpd     6595   root    4u  IPv6  43709      0t0  TCP *:80 (LISTEN)
-httpd     6595   root    6u  IPv6  43713      0t0  TCP *:55555 (LISTEN)
+httpd     6595   root    6u  IPv6  43713      0t0  TCP *:2222 (LISTEN)
 
-$ netstat -na |grep 55555
-tcp6       0      0 :::55555                :::*                    LISTEN
+$ netstat -na |grep 2222
+tcp6       0      0 :::2222                :::*                    LISTEN
 ```
