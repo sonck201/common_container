@@ -76,6 +76,14 @@ services:
       - 8081:8081
     networks: *network
 
+  redis:
+    image: bitnami/redis:latest
+    restart: always
+    env_file: .redis.env
+    networks: *network
+    ports:
+      - 6379:6379
+
   # app:
   #   build:
   #     context: .
