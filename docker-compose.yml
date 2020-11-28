@@ -103,27 +103,6 @@ services:
       - 8080
     networks: *network
 
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile/app.Dockerfile
-  #   command: php -S 0.0.0.0:${APP_PORT_INTERNAL} -t public
-  #   working_dir: /app
-  #   env_file: *envFile
-  #   environment:
-  #     VIRTUAL_HOST: test.local
-  #   volumes:
-  #     - .:/app
-  #   ports:
-  #     - ${APP_PORT}:${APP_PORT_INTERNAL}
-  #   depends_on:
-  #     - mysql5
-  #   networks: *network
-  # apache:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile/apache.Dockerfile
-
 volumes:
   PortainerData:
     external:
