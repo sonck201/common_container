@@ -2,4 +2,4 @@
 database
 vendor
 
-.env
+**.env
