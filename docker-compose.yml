@@ -6,8 +6,11 @@ services:
     restart: always
     env_file: &envFile
       - .env
-    ports:
-      - 9000:9000
+    environment:
+      VIRTUAL_HOST: portainer.dualwind.xyz
+      VIRTUAL_PORT: 9000
+    expose:
+      - 9000
     volumes:
       - PortainerData:/data
       - /var/run/docker.sock:/var/run/docker.sock
@@ -20,8 +23,10 @@ services:
     env_file: *envFile
     environment:
       PMA_HOST: mysql5
-    ports:
-      - ${PHPMYADMIN_PORT}:80
+      VIRTUAL_HOST: phpmyadmin.dualwind.xyz
+      VIRTUAL_PORT: 80
+    expose:
+      - 80
     depends_on:
       - mysql5
     networks: *network
@@ -33,11 +38,13 @@ services:
     env_file: *envFile
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      VIRTUAL_HOST: mysql5.dualwind.xyz
+      VIRTUAL_PORT: 3306
     volumes:
       - MysqlDb:/var/lib/mysql
       - ./database:/database
-    ports:
-      - ${MYSQL_PORT}:3306
+    expose:
+      - 3306
     networks: *network
 
   nginxProxy:
@@ -56,9 +63,12 @@ services:
     restart: always
     env_file: .redis.env
     command: /opt/bitnami/scripts/redis/run.sh --maxmemory 100mb --maxmemory-policy allkeys-lru
+    environment:
+      VIRTUAL_HOST: redis.dualwind.xyz
+      VIRTUAL_PORT: 6379
     networks: *network
-    ports:
-      - 6379:6379
+    expose:
+      - 6379
     volumes:
       - RedisData:/bitnami/redis/data
 
@@ -75,8 +85,11 @@ services:
       - /dev/disk/:/dev/disk:ro
     devices:
       - /dev/kmsg
-    ports:
-      - 8082:8080
+    environment:
+      VIRTUAL_HOST: cadvisor.dualwind.xyz
+      VIRTUAL_PORT: 8080
+    expose:
+      - 8080
     networks: *network
 
   # app:
