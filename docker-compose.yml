@@ -55,9 +55,12 @@ services:
     image: bitnami/redis:latest
     restart: always
     env_file: .redis.env
+    command: /opt/bitnami/scripts/redis/run.sh --maxmemory 100mb --maxmemory-policy allkeys-lru
     networks: *network
     ports:
       - 6379:6379
+    volumes:
+      - RedisData:/bitnami/redis/data
 
   cadvisor:
     build:
@@ -129,6 +132,9 @@ volumes:
   MysqlDb:
     external:
       name: MysqlDb
+  RedisData:
+    external:
+      name: RedisData
   MongoDb:
     external:
       name: MongoDb
