@@ -7,6 +7,7 @@ services:
     env_file: &envFile
       - .env
     environment:
+      LETSENCRYPT_HOST: portainer.dualwind.xyz
       VIRTUAL_HOST: portainer.dualwind.xyz
       VIRTUAL_PORT: 9000
     expose:
@@ -23,6 +24,7 @@ services:
     env_file: *envFile
     environment:
       PMA_HOST: mysql5
+      LETSENCRYPT_HOST: phpmyadmin.dualwind.xyz
       VIRTUAL_HOST: phpmyadmin.dualwind.xyz
       VIRTUAL_PORT: 80
     expose:
@@ -48,12 +50,32 @@ services:
   nginxProxy:
     image: jwilder/nginx-proxy:latest
     restart: always
+    container_name: nginxProxy
     env_file: *envFile
+    labels:
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.docker_gen: "true"
     ports:
       - 80:80
       - 443:443
     volumes:
+      - nginxCerts:/etc/nginx/certs
+      - nginxVhostd:/etc/nginx/vhost.d
+      - nginxHtml:/usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks: *network
+
+  sslGenerator:
+    image: jrcs/letsencrypt-nginx-proxy-companion:latest
+    restart: always
+    environment:
+      NGINX_PROXY_CONTAINER: nginxProxy
+      NGINX_DOCKER_GEN_CONTAINER: nginxProxy
+      DEFAULT_EMAIL: thanhson_it201@yahoo.com
+    volumes:
+      - nginxCerts:/etc/nginx/certs
+      - nginxVhostd:/etc/nginx/vhost.d
+      - nginxHtml:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     networks: *network
 
   redis:
@@ -146,6 +168,9 @@ volumes:
   MongoDb:
     external:
       name: MongoDb
+  nginxCerts:
+  nginxHtml:
+  nginxVhostd:
 
 networks:
   nginxProxy:
