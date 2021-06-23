@@ -38,13 +38,11 @@ services:
     env_file: *envFile
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      VIRTUAL_HOST: mysql5.dualwind.xyz
-      VIRTUAL_PORT: 3306
     volumes:
       - MysqlDb:/var/lib/mysql
       - ./database:/database
-    expose:
-      - 3306
+    ports:
+      - 3306:3306
     networks: *network
 
   nginxProxy:
@@ -63,12 +61,9 @@ services:
     restart: always
     env_file: .redis.env
     command: /opt/bitnami/scripts/redis/run.sh --maxmemory 100mb --maxmemory-policy allkeys-lru
-    environment:
-      VIRTUAL_HOST: redis.dualwind.xyz
-      VIRTUAL_PORT: 6379
     networks: *network
-    expose:
-      - 6379
+    ports:
+      - 6379:6379
     volumes:
       - RedisData:/bitnami/redis/data
 
