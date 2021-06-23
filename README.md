@@ -2,6 +2,18 @@
 
 ## Reference
 
+### SSL for server
+- https://letsencrypt.org/getting-started/
+- https://certbot.eff.org/lets-encrypt/centosrhel7-nginx
+- https://snapcraft.io/docs/installing-snap-on-centos
+
+### SSL for container
+- https://hub.docker.com/r/jwilder/nginx-proxy
+- https://github.com/nginx-proxy/acme-companion
+- https://docs.idalko.com/exalate/pages/viewpage.action?pageId=49154328
+- https://hub.docker.com/r/jrcs/letsencrypt-nginx-proxy-companion
+- https://github.com/starikovs/docker-compose-3-letsencrypt-nginx-proxy-companion/blob/master/docker-compose.yml
+
 ### Transcrypt
 
 ```bash
