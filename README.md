@@ -2,9 +2,16 @@
 
 ## Reference
 
+### Transcrypt
+
+```bash
+# https://github.com/elasticdog/transcrypt
+transcrypt -c aes-256-cbc -p $PASSWORD
+```
+
 ### Databases
 
-```:bash
+```bash
 # Export
 mysqldump -u [username] -p [database name] > [database name].sql
 
@@ -21,7 +28,7 @@ gunzip < [compressed_filename.sql.gz]  | mysql -u [user] -p[password] [databasen
 
 ### Firewalld
 
-```:bash
+```bash
 $ sudo yum install firewalld
 $ sudo systemctl start firewalld
 $ sudo systemctl enable firewalld
@@ -31,7 +38,7 @@ $ sudo firewall-cmd --zone=public --add-port=2222/tcp --permanent
 $ sudo firewall-cmd --reload
 ```
 
-```:bash
+```bash
 # Check Port Status
 $ netstat -na | grep 2222
 $ lsof -i -P |grep http
