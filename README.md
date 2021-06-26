@@ -71,3 +71,7 @@ httpd     6595   root    6u  IPv6  43713      0t0  TCP *:2222 (LISTEN)
 $ netstat -na |grep 2222
 tcp6       0      0 :::2222                :::*                    LISTEN
 ```
+
+### Generate htpasswd
+
+- <http://aspirine.org/htpasswd_en.html>

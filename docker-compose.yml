@@ -53,7 +53,7 @@ services:
     container_name: nginxProxy
     env_file: *envFile
     labels:
-      com.github.jrcs.letsencrypt_nginx_proxy_companion.docker_gen: "true"
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.docker_gen: 'true'
     ports:
       - 80:80
       - 443:443
@@ -103,11 +103,45 @@ services:
     devices:
       - /dev/kmsg
     environment:
+      LETSENCRYPT_HOST: cadvisor.dualwind.xyz
       VIRTUAL_HOST: cadvisor.dualwind.xyz
       VIRTUAL_PORT: 8080
     expose:
       - 8080
     networks: *network
+
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    environment:
+      LETSENCRYPT_HOST: prometheus.dualwind.xyz
+      VIRTUAL_HOST: prometheus.dualwind.xyz
+      VIRTUAL_PORT: 9090
+    ports:
+      - 9090:9090
+    expose:
+      - 9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - cadvisor
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: always
+    environment:
+      LETSENCRYPT_HOST: grafana.dualwind.xyz
+      VIRTUAL_HOST: grafana.dualwind.xyz
+      VIRTUAL_PORT: 3000
+    ports:
+      - 4000:3000
+    expose:
+      - 3000
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+    depends_on:
+      - prometheus
 
   # app:
   #   build:
@@ -176,3 +210,4 @@ networks:
   nginxProxy:
     external:
       name: nginxProxy
+
