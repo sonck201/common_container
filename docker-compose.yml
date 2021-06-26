@@ -93,6 +93,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile/cadvisor.Dockerfile
+    container_name: cadvisor
     privileged: true
     volumes:
       - /:/rootfs:ro
@@ -102,30 +103,31 @@ services:
       - /dev/disk/:/dev/disk:ro
     devices:
       - /dev/kmsg
-    environment:
-      LETSENCRYPT_HOST: cadvisor.dualwind.xyz
-      VIRTUAL_HOST: cadvisor.dualwind.xyz
-      VIRTUAL_PORT: 8080
-    expose:
-      - 8080
+    #environment:
+    #  LETSENCRYPT_HOST: cadvisor.dualwind.xyz
+    #  VIRTUAL_HOST: cadvisor.dualwind.xyz
+    #  VIRTUAL_PORT: 8080
+    #expose:
+    #  - 8080
     networks: *network
 
   prometheus:
     image: prom/prometheus:latest
     command:
       - --config.file=/etc/prometheus/prometheus.yml
-    environment:
-      LETSENCRYPT_HOST: prometheus.dualwind.xyz
-      VIRTUAL_HOST: prometheus.dualwind.xyz
-      VIRTUAL_PORT: 9090
-    ports:
-      - 9090:9090
-    expose:
-      - 9090
+    #environment:
+    #  LETSENCRYPT_HOST: prometheus.dualwind.xyz
+    #  VIRTUAL_HOST: prometheus.dualwind.xyz
+    #  VIRTUAL_PORT: 9090
+    #ports:
+    #  - 9090:9090
+    #expose:
+    #  - 9090
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     depends_on:
       - cadvisor
+    networks: *network
 
   grafana:
     image: grafana/grafana:latest
@@ -134,14 +136,15 @@ services:
       LETSENCRYPT_HOST: grafana.dualwind.xyz
       VIRTUAL_HOST: grafana.dualwind.xyz
       VIRTUAL_PORT: 3000
-    ports:
-      - 4000:3000
-    expose:
-      - 3000
+    #ports:
+    #  - 4000:3000
+    #expose:
+    #  - 3000
     volumes:
-      - ./data/grafana:/var/lib/grafana
+      - grafana:/var/lib/grafana
     depends_on:
       - prometheus
+    networks: *network
 
   # app:
   #   build:
@@ -205,6 +208,7 @@ volumes:
   nginxCerts:
   nginxHtml:
   nginxVhostd:
+  grafana:
 
 networks:
   nginxProxy:
