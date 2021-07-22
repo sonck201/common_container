@@ -4,8 +4,6 @@ services:
   portainer:
     image: portainer/portainer-ce:latest
     restart: always
-    env_file: &envFile
-      - .env
     environment:
       LETSENCRYPT_HOST: portainer.dualwind.xyz
       VIRTUAL_HOST: portainer.dualwind.xyz
@@ -21,7 +19,6 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     restart: always
-    env_file: *envFile
     environment:
       PMA_HOST: mysql5
       LETSENCRYPT_HOST: phpmyadmin.dualwind.xyz
@@ -37,7 +34,8 @@ services:
     image: mysql:5.7
     restart: always
     command: --default-authentication-plugin=mysql_native_password --max_allowed_packet=512M
-    env_file: *envFile
+    env_file:
+      - ./env/mysql.env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
@@ -51,7 +49,6 @@ services:
     image: jwilder/nginx-proxy:latest
     restart: always
     container_name: nginxProxy
-    env_file: *envFile
     labels:
       com.github.jrcs.letsencrypt_nginx_proxy_companion.docker_gen: 'true'
     ports:
@@ -81,7 +78,8 @@ services:
   redis:
     image: bitnami/redis:latest
     restart: always
-    env_file: .redis.env
+    env_file:
+      - ./env/redis.env
     command: /opt/bitnami/scripts/redis/run.sh --maxmemory 100mb --maxmemory-policy allkeys-lru
     networks: *network
     ports:
@@ -103,26 +101,12 @@ services:
       - /dev/disk/:/dev/disk:ro
     devices:
       - /dev/kmsg
-    #environment:
-    #  LETSENCRYPT_HOST: cadvisor.dualwind.xyz
-    #  VIRTUAL_HOST: cadvisor.dualwind.xyz
-    #  VIRTUAL_PORT: 8080
-    #expose:
-    #  - 8080
     networks: *network
 
   prometheus:
     image: prom/prometheus:latest
     command:
       - --config.file=/etc/prometheus/prometheus.yml
-    #environment:
-    #  LETSENCRYPT_HOST: prometheus.dualwind.xyz
-    #  VIRTUAL_HOST: prometheus.dualwind.xyz
-    #  VIRTUAL_PORT: 9090
-    #ports:
-    #  - 9090:9090
-    #expose:
-    #  - 9090
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     depends_on:
@@ -136,36 +120,11 @@ services:
       LETSENCRYPT_HOST: grafana.dualwind.xyz
       VIRTUAL_HOST: grafana.dualwind.xyz
       VIRTUAL_PORT: 3000
-    #ports:
-    #  - 4000:3000
-    #expose:
-    #  - 3000
     volumes:
       - grafana:/var/lib/grafana
     depends_on:
       - prometheus
     networks: *network
-
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile/app.Dockerfile
-  #   command: php -S 0.0.0.0:${APP_PORT_INTERNAL} -t public
-  #   working_dir: /app
-  #   env_file: *envFile
-  #   environment:
-  #     VIRTUAL_HOST: test.local
-  #   volumes:
-  #     - .:/app
-  #   ports:
-  #     - ${APP_PORT}:${APP_PORT_INTERNAL}
-  #   depends_on:
-  #     - mysql5
-  #   networks: *network
-  # apache:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile/apache.Dockerfile
 
   # mongo:
   #   image: mongo:latest
@@ -214,4 +173,3 @@ networks:
   nginxProxy:
     external:
       name: nginxProxy
-
