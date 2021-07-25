@@ -72,36 +72,6 @@ services:
       - 3306:3306
     networks: *network
 
-  nginxProxy:
-    image: jwilder/nginx-proxy:latest
-    restart: always
-    container_name: nginxProxy
-    labels:
-      com.github.jrcs.letsencrypt_nginx_proxy_companion.docker_gen: 'true'
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - nginxCerts:/etc/nginx/certs
-      - nginxVhostd:/etc/nginx/vhost.d
-      - nginxHtml:/usr/share/nginx/html
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    networks: *network
-
-  sslGenerator:
-    image: jrcs/letsencrypt-nginx-proxy-companion:latest
-    restart: always
-    environment:
-      NGINX_PROXY_CONTAINER: nginxProxy
-      NGINX_DOCKER_GEN_CONTAINER: nginxProxy
-      DEFAULT_EMAIL: thanhson_it201@yahoo.com
-    volumes:
-      - nginxCerts:/etc/nginx/certs
-      - nginxVhostd:/etc/nginx/vhost.d
-      - nginxHtml:/usr/share/nginx/html
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks: *network
-
   redis:
     image: bitnami/redis:latest
     restart: always
@@ -142,16 +112,17 @@ services:
 
   grafana:
     image: grafana/grafana:latest
-    restart: always
-    environment:
-      LETSENCRYPT_HOST: grafana.dualwind.xyz
-      VIRTUAL_HOST: grafana.dualwind.xyz
-      VIRTUAL_PORT: 3000
+    restart: no
     volumes:
-      - grafana:/var/lib/grafana
+      - GrafanaData:/var/lib/grafana
     depends_on:
       - prometheus
     networks: *network
+    labels:
+      - traefik.http.routers.portainer.rule=Host(`grafana.dualwind.xyz`)
+      - traefik.http.routers.portainer.tls=true
+      - traefik.http.routers.portainer.tls.certresolver=letsencrypt
+      - traefik.http.services.portainer.loadbalancer.server.port=3000
 
 volumes:
   TraefikPublicCertificates:
@@ -164,13 +135,7 @@ volumes:
   RedisData:
     external:
       name: RedisData
-  MongoDb:
-    external:
-      name: MongoDb
-  nginxCerts:
-  nginxHtml:
-  nginxVhostd:
-  grafana:
+  GrafanaData:
 
 networks:
   nginxProxy:
