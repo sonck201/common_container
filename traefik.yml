@@ -29,7 +29,7 @@ entryPoints:
     address: :443
 
 certificatesResolvers:
-  myresolver:
+  letsencrypt:
     acme:
       email: thanhson_it201@yahoo.com
       storage: acme.json
