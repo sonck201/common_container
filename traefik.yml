@@ -157,3 +157,5 @@ providers:
 #
 #    exposedByDefault: false
 
+pilot:
+  token: '0afe505f-9c23-4770-95ca-47c50e9e58f5'
