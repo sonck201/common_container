@@ -1,4 +1,5 @@
 #pattern  filter=crypt diff=crypt merge=crypt
-.env  filter=crypt diff=crypt merge=crypt
-.redis.env  filter=crypt diff=crypt merge=crypt
+env/redis.env  filter=crypt diff=crypt merge=crypt
+env/mysql.env  filter=crypt diff=crypt merge=crypt
+
 auth.htpasswd  filter=crypt diff=crypt merge=crypt
