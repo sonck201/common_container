@@ -13,6 +13,7 @@ services:
       - ./traefik.yml:/etc/traefik/traefik.yml
       - ./auth.htpasswd:/etc/traefik/auth.htpasswd
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - TraefikPublicCertificates:/certificates
     ports:
       - 80:80
       - 443:443
@@ -153,6 +154,7 @@ services:
     networks: *network
 
 volumes:
+  TraefikPublicCertificates:
   PortainerData:
     external:
       name: PortainerData

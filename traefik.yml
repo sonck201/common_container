@@ -32,7 +32,7 @@ certificatesResolvers:
   letsencrypt:
     acme:
       email: thanhson_it201@yahoo.com
-      storage: acme.json
+      storage: /certificates/acme.json
       httpChallenge:
         entryPoint: web
 
